@@ -17,17 +17,19 @@ type Inventory struct {
 	Groups   map[string]Group   `toml:"groups"`
 }
 
-func (i Inventory) ResolveHosts(name string) []string {
+func (i Inventory) ResolveHosts(name string) map[string]Machine {
 	if machine, ok := i.Machines[name]; ok {
-		return []string{machine.Address}
+		return map[string]Machine{name: machine}
 	} else if group, ok := i.Groups[name]; ok {
-		var result []string
+		result := make(map[string]Machine)
 		for _, member := range group.Members {
 			resolved := i.ResolveHosts(member)
-			result = append(result, resolved...)
+			for s, m := range resolved {
+				result[s] = m
+			}
 		}
 		return result
 	} else {
-		return []string{}
+		return map[string]Machine{}
 	}
 }
