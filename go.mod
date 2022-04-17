@@ -3,6 +3,7 @@ module github.com/ghotfall/detrint
 go 1.18
 
 require (
+	github.com/traefik/yaegi v0.11.3
 	go.uber.org/zap v1.21.0
 	google.golang.org/grpc v1.45.0
 )

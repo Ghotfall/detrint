@@ -2,10 +2,14 @@ package state
 
 import (
 	"github.com/ghotfall/detrint/inv"
+	"github.com/traefik/yaegi/interp"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
+
+var ModulesPath = "./modules"
+var ScriptsPath = "./scripts"
 
 type State struct {
 	Hosts   string   `toml:"hosts"`
@@ -42,6 +46,27 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 					zap.Error(dialErr),
 				)
 				continue
+			}
+
+			// Create interpreter
+			interpreter := interp.New(interp.Options{
+				GoPath:       ModulesPath,
+				Unrestricted: true,
+			})
+
+			// Execute scripts
+			l.Info("Scripts to execute", zap.Strings("scripts", state.Scripts))
+			for _, script := range state.Scripts {
+				l.Info("Executing script", zap.String("script", script))
+
+				_, evalErr := interpreter.EvalPath(ScriptsPath + "/" + script + ".go")
+				if evalErr != nil {
+					l.Error(
+						"An failure occurred during script execution",
+						zap.String("script", script),
+						zap.Error(evalErr),
+					)
+				}
 			}
 
 			// Close gRPC-connection
