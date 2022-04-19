@@ -54,7 +54,13 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 				GoPath:       ModulesPath,
 				Unrestricted: true,
 			})
-			builtinErr := builtin.Load(interpreter, l)
+
+			builtinErr := builtin.Load(
+				interpreter,
+				builtin.Settings{
+					Logger: l,
+				},
+			)
 			if builtinErr != nil {
 				l.Warn(
 					"Failed to load builtin modules, scripts may not execute correctly",

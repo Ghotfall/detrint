@@ -8,15 +8,20 @@ import (
 	"reflect"
 )
 
-func Load(interpreter *interp.Interpreter, l *zap.Logger) error {
+type Settings struct {
+	Logger *zap.Logger
+}
+
+func Load(interpreter *interp.Interpreter, settings Settings) error {
 	stdlibErr := interpreter.Use(stdlib.Symbols)
 	if stdlibErr != nil {
 		return stdlibErr
 	}
 
-	// github.com/ghotfall/detrint/builtin
 	symbols := make(map[string]map[string]reflect.Value)
-	symbols["github.com/ghotfall/detrint/builtin/util/util"] = util.LoggerSymbols(l)
+
+	symbols["github.com/ghotfall/detrint/builtin/util/util"] = util.LoggerSymbols(settings.Logger)
+
 	symbolsErr := interpreter.Use(symbols)
 	if symbolsErr != nil {
 		return symbolsErr
