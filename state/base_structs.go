@@ -1,6 +1,7 @@
 package state
 
 import (
+	"github.com/ghotfall/detrint/builtin"
 	"github.com/ghotfall/detrint/inv"
 	"github.com/traefik/yaegi/interp"
 	"go.uber.org/zap"
@@ -53,6 +54,13 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 				GoPath:       ModulesPath,
 				Unrestricted: true,
 			})
+			builtinErr := builtin.Load(interpreter, l)
+			if builtinErr != nil {
+				l.Warn(
+					"Failed to load builtin modules, scripts may not execute correctly",
+					zap.Error(builtinErr),
+				)
+			}
 
 			// Execute scripts
 			l.Info("Scripts to execute", zap.Strings("scripts", state.Scripts))
