@@ -14,13 +14,13 @@ func main() {
 
 	i := inv.Inventory{
 		Machines: map[string]inv.Machine{
-			"server_1": {Address: "10.0.0.1"},
-			"server_2": {Address: "10.0.0.2"},
+			"server_1": {Address: "10.0.0.1", Variables: map[string]interface{}{"var1": true}},
+			"server_2": {Address: "10.0.0.2", Variables: map[string]interface{}{"var2": "test"}},
 			"server_3": {Address: "10.0.0.3"},
 			"server_4": {Address: "10.0.0.4"},
 		},
 		Groups: map[string]inv.Group{
-			"group_1": {Members: []string{"server_1", "server_2"}},
+			"group_1": {Members: []string{"server_1", "server_2"}, Variables: map[string]interface{}{"gr_var1": 123}},
 			"group_2": {Members: []string{"server_1", "group_1", "server_3"}},
 			"group_3": {Members: []string{"group_2", "server_4"}},
 		},

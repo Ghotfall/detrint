@@ -26,7 +26,7 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 		hosts := i.ResolveHosts(state.Hosts)
 		l.Info("Resolved host", zap.Any("hosts", hosts))
 
-		for _, machine := range hosts {
+		for servername, machine := range hosts {
 			// Get correct target address
 			target, targetErr := machine.Target()
 			if targetErr != nil {
@@ -55,10 +55,16 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 				Unrestricted: true,
 			})
 
-			builtinErr := builtin.Load(
-				interpreter,
+			// Get vars for current machine
+			machineVars, varsErr := i.GetMachineVars(servername)
+			if varsErr != nil {
+				l.Warn("Failed to get machine vars, scripts may not execute correctly", zap.Error(varsErr))
+			}
+
+			builtinErr := builtin.Load(interpreter,
 				builtin.Settings{
 					Logger: l,
+					Vars:   machineVars,
 				},
 			)
 			if builtinErr != nil {

@@ -10,6 +10,7 @@ import (
 
 type Settings struct {
 	Logger *zap.Logger
+	Vars   map[string]interface{}
 }
 
 func Load(interpreter *interp.Interpreter, settings Settings) error {
@@ -20,7 +21,7 @@ func Load(interpreter *interp.Interpreter, settings Settings) error {
 
 	symbols := make(map[string]map[string]reflect.Value)
 
-	symbols["github.com/ghotfall/detrint/builtin/util/util"] = util.LoggerSymbols(settings.Logger)
+	symbols["github.com/ghotfall/detrint/builtin/util/util"] = util.LoggerSymbols(settings.Logger, settings.Vars)
 
 	symbolsErr := interpreter.Use(symbols)
 	if symbolsErr != nil {
