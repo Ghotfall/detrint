@@ -7,8 +7,10 @@ import (
 
 var Logger *zap.Logger
 
-func LoggerSymbols(logger *zap.Logger) map[string]reflect.Value {
+func LoggerSymbols(l *zap.Logger) map[string]reflect.Value {
+	Logger = l
+
 	return map[string]reflect.Value{
-		"Logger": reflect.ValueOf(logger),
+		"Logger": reflect.ValueOf(Logger),
 	}
 }
