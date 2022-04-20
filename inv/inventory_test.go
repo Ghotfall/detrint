@@ -52,3 +52,73 @@ func TestInventory_ResolveHosts(t *testing.T) {
 		})
 	}
 }
+
+func TestInventory_GetMachineVars(t *testing.T) {
+	i := Inventory{
+		Machines: map[string]Machine{
+			"server_1": {Variables: map[string]interface{}{"var_1": true}},
+			"server_2": {Variables: map[string]interface{}{"var_2": 123}},
+			"server_3": {Variables: map[string]interface{}{"var_3": "no"}},
+			"server_4": {Variables: map[string]interface{}{"var_4": 4.5, "var_41": false}},
+		},
+		Groups: map[string]Group{
+			"group_1": {
+				Members: []string{"server_1", "server_2"},
+				Variables: map[string]interface{}{
+					"gr_var_1": true,
+					"gr_var_2": "test",
+				},
+			},
+		},
+	}
+
+	tests := []struct {
+		name    string
+		input   string
+		want    map[string]interface{}
+		wantErr bool
+	}{
+		{
+			name:    "server_single_var",
+			input:   "server_3",
+			want:    map[string]interface{}{"var_3": "no"},
+			wantErr: false,
+		},
+		{
+			name:    "server_multiple_vars",
+			input:   "server_4",
+			want:    map[string]interface{}{"var_4": 4.5, "var_41": false},
+			wantErr: false,
+		},
+		{
+			name:    "server_group_1",
+			input:   "server_1",
+			want:    map[string]interface{}{"var_1": true, "gr_var_1": true, "gr_var_2": "test"},
+			wantErr: false,
+		},
+		{
+			name:    "server_group_2",
+			input:   "server_2",
+			want:    map[string]interface{}{"var_2": 123, "gr_var_1": true, "gr_var_2": "test"},
+			wantErr: false,
+		},
+		{
+			name:    "no_server",
+			input:   "server_5",
+			want:    map[string]interface{}{},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := i.GetMachineVars(tt.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetMachineVars() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetMachineVars() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
