@@ -8,7 +8,7 @@ import (
 var Logger *zap.Logger
 var Vars map[string]interface{}
 
-func LoggerSymbols(l *zap.Logger, v map[string]interface{}) map[string]reflect.Value {
+func Symbols(l *zap.Logger, v map[string]interface{}) map[string]reflect.Value {
 	Logger = l
 	Vars = v
 
