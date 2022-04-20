@@ -39,7 +39,7 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 			}
 
 			// Create gRPC-connection for client creation
-			conn, dialErr := grpc.Dial(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
+			conn, dialErr := grpc.Dial(target, grpc.WithTransportCredentials(insecure.NewCredentials())) // TODO: TLS
 			if dialErr != nil {
 				l.Error(
 					"Failed to create client connection, skipping target",
