@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package shell;
+option go_package="./;shellpb";
+
+message ExecuteRequest {
+  string script = 1;
+}
+
+message ExecuteResponse {
+  string result = 1;
+}
+
+service ShellService {
+  rpc Execute(ExecuteRequest) returns (ExecuteResponse) {};
+}
