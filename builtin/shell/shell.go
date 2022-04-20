@@ -17,11 +17,11 @@ func Symbols(conn *grpc.ClientConn) map[string]reflect.Value {
 	}
 }
 
-func Execute(script string) (string, error) {
+func Execute(script string) (stdout, stderr string, code int, err error) {
 	response, err := client.Execute(context.Background(), &shellpb.ExecuteRequest{Script: script})
 	if err != nil {
-		return "", err
+		return "", "", 0, err
 	} else {
-		return response.GetResult(), nil
+		return response.GetStdout(), response.GetStderr(), int(response.GetCode()), nil
 	}
 }

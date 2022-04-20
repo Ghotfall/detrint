@@ -8,7 +8,9 @@ message ExecuteRequest {
 }
 
 message ExecuteResponse {
-  string result = 1;
+  string stdout = 1;
+  string stderr = 2;
+  int32 code = 3;
 }
 
 service ShellService {
