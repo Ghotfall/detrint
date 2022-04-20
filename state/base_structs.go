@@ -58,20 +58,39 @@ func (s Set) Deploy(i inv.Inventory, l *zap.Logger) {
 			// Get vars for current machine
 			machineVars, varsErr := i.GetMachineVars(servername)
 			if varsErr != nil {
-				l.Warn("Failed to get machine vars, scripts may not execute correctly", zap.Error(varsErr))
+				l.Error("Failed to get machine vars, skipping host", zap.Error(varsErr))
+				closeErr := conn.Close()
+				if closeErr != nil {
+					l.Error(
+						"Failed to close client connection",
+						zap.String("target", target),
+						zap.Error(closeErr),
+					)
+				}
+				continue
 			}
 
 			builtinErr := builtin.Load(interpreter,
 				builtin.Settings{
-					Logger: l,
-					Vars:   machineVars,
+					Logger:     l,
+					Vars:       machineVars,
+					Connection: conn,
 				},
 			)
 			if builtinErr != nil {
-				l.Warn(
-					"Failed to load builtin modules, scripts may not execute correctly",
+				l.Error(
+					"Failed to load builtin modules, skipping host",
 					zap.Error(builtinErr),
 				)
+				closeErr := conn.Close()
+				if closeErr != nil {
+					l.Error(
+						"Failed to close client connection",
+						zap.String("target", target),
+						zap.Error(closeErr),
+					)
+				}
+				continue
 			}
 
 			// Execute scripts
