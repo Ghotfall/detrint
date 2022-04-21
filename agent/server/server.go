@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/ghotfall/detrint/agent/service/file"
 	"github.com/ghotfall/detrint/agent/service/shell"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -22,6 +23,7 @@ func Start(host, port string, l *zap.Logger) {
 
 	// Register services
 	shell.Register(server, l)
+	file.Register(server, l)
 
 	l.Info("Starting gRPC server...")
 	servErr := server.Serve(listener)

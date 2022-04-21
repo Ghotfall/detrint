@@ -1,6 +1,7 @@
 package builtin
 
 import (
+	"github.com/ghotfall/detrint/builtin/file"
 	"github.com/ghotfall/detrint/builtin/shell"
 	"github.com/ghotfall/detrint/builtin/util"
 	"github.com/traefik/yaegi/interp"
@@ -26,6 +27,7 @@ func Load(interpreter *interp.Interpreter, settings Settings) error {
 
 	symbols["github.com/ghotfall/detrint/builtin/util/util"] = util.Symbols(settings.Logger, settings.Vars)
 	symbols["github.com/ghotfall/detrint/builtin/shell/shell"] = shell.Symbols(settings.Connection)
+	symbols["github.com/ghotfall/detrint/builtin/file/file"] = file.Symbols(settings.Connection)
 
 	symbolsErr := interpreter.Use(symbols)
 	if symbolsErr != nil {

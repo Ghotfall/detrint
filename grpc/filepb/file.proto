@@ -13,6 +13,7 @@ message StatResponse {
   uint32 mode = 3;
   string time = 4;
   bool dir = 5;
+  string pathErr = 6;
 }
 
 service FileService {
