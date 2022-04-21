@@ -12,13 +12,13 @@ import (
 	"strings"
 )
 
-var Logger *zap.Logger
+var logger *zap.Logger
 
 func Register(s grpc.ServiceRegistrar, l *zap.Logger) {
-	Logger = l
+	logger = l
 
 	shellpb.RegisterShellServiceServer(s, Server{})
-	Logger.Info("Registered new service", zap.String("service", "shell"))
+	logger.Info("Registered new service", zap.String("service", "shell"))
 }
 
 type Server struct {
@@ -26,7 +26,7 @@ type Server struct {
 }
 
 func (s Server) Execute(_ context.Context, request *shellpb.ExecuteRequest) (*shellpb.ExecuteResponse, error) {
-	Logger.Info("Method shell.execute is called", zap.String("request", request.String()))
+	logger.Info("Method shell.execute is called", zap.String("request", request.String()))
 
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
@@ -46,14 +46,14 @@ func (s Server) Execute(_ context.Context, request *shellpb.ExecuteRequest) (*sh
 		if ok {
 			resp.Code = int32(exitError.ExitCode())
 		} else {
-			Logger.Error("Unexpected error while executing shell.execute", zap.Error(err))
+			logger.Error("Unexpected error while executing shell.execute", zap.Error(err))
 			return nil, status.Errorf(codes.Internal, "failed to run script: %s", err.Error())
 		}
 	} else {
 		resp.Code = 0
 	}
 
-	Logger.Debug(
+	logger.Debug(
 		"Execution of shell.execute finished",
 		zap.String("stdout", resp.Stdout),
 		zap.String("stderr", resp.Stderr),
