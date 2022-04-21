@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package file;
+option go_package="./;filepb";
+
+message StatRequest {
+  string filename = 1;
+}
+
+message StatResponse {
+  string name = 1;
+  int64 size = 2;
+  uint32 mode = 3;
+  string time = 4;
+  bool dir = 5;
+}
+
+service FileService {
+  rpc GetStat(StatRequest) returns (StatResponse) {};
+}
