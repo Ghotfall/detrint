@@ -10,10 +10,10 @@ import (
 var DefaultPort = "7056"
 
 type Machine struct {
-	Address   string                 `toml:"address"`
-	Username  string                 `toml:"username"`
-	Password  string                 `toml:"password"`
-	Variables map[string]interface{} `toml:"variables,omitempty"`
+	Address   string                 `toml:"address" json:"address"`
+	Username  string                 `toml:"username" json:"username"`
+	Password  string                 `toml:"password" json:"password"`
+	Variables map[string]interface{} `toml:"variables,omitempty" json:"variables,omitempty"`
 }
 
 func (m Machine) Target() (string, error) {

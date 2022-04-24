@@ -3,8 +3,8 @@ package inv
 import "fmt"
 
 type Inventory struct {
-	Machines map[string]Machine `toml:"machines"`
-	Groups   map[string]Group   `toml:"groups"`
+	Machines map[string]Machine `toml:"machines" json:"machines"`
+	Groups   map[string]Group   `toml:"groups" json:"groups"`
 }
 
 func (i Inventory) ResolveHosts(name string) map[string]Machine {

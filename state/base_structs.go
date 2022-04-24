@@ -13,8 +13,8 @@ var ModulesPath = "./modules"
 var ScriptsPath = "./scripts"
 
 type State struct {
-	Hosts   string   `toml:"hosts"`
-	Scripts []string `toml:"scripts"`
+	Hosts   string   `toml:"hosts" json:"hosts"`
+	Scripts []string `toml:"scripts" json:"scripts"`
 }
 
 type Set map[string]State
